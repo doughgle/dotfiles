@@ -1,0 +1,13 @@
+[alias]
+	st = status
+	co = checkout
+	br = branch
+	lg = log --oneline --graph
+[core]
+	excludesfile = $HOME/.gitignore_global
+	editor = vim
+	sshCommand = ssh -i ~/.ssh/github -F /dev/null
+[credential]
+	helper = /usr/share/doc/git/contrib/credential/libsecret/git-credential-libsecret
+[pull]
+	rebase = true

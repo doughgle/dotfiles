@@ -1,0 +1,19 @@
+---
+apiVersion: k3d.io/v1alpha4
+kind: Simple
+name: k3s-default-3-node
+servers: 1
+agents: 3
+image: docker.io/rancher/k3s:v1.22.7-k3s1
+options:
+  k3s: # options passed on to K3s itself
+    nodeLabels:
+      - label: topology.kubernetes.io/zone=zone-a # same as `--k3s-node-label 'foo=bar@agent:1'` -> this results in a Kubernetes node label
+        nodeFilters:
+          - agent:0
+      - label: topology.kubernetes.io/zone=zone-b # same as `--k3s-node-label 'foo=bar@agent:1'` -> this results in a Kubernetes node label
+        nodeFilters:
+          - agent:1
+      - label: topology.kubernetes.io/zone=zone-c # same as `--k3s-node-label 'foo=bar@agent:1'` -> this results in a Kubernetes node label
+        nodeFilters:
+          - agent:2
