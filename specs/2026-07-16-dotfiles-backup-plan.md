@@ -969,25 +969,25 @@ test -x setup.sh && echo "setup.sh is executable"
 - Create: `.config/copyq/copyq_tabs.ini`
 - Create: `.config/copyq/prompts.txt`
 
-- [ ] **Step 1: Ensure dirs exist**
+- [x] **Step 1: Ensure dirs exist**
 
 ```bash
 mkdir -p /home/dough/repos/exercises/dotfiles/.config/copyq
 ```
 
-- [ ] **Step 2: Write copyq.conf**
+- [x] **Step 2: Write copyq.conf**
 
 Contents from `~/.config/copyq/copyq.conf` (247 lines). Portable — no machine paths or secrets.
 
-- [ ] **Step 3: Write copyq-commands.ini**
+- [x] **Step 3: Write copyq-commands.ini**
 
 Contents from `~/.config/copyq/copyq-commands.ini` (53 lines). 10 user commands: Pin/Unpin, Tag/Untag, Move Images to "&Images" tab, Show window via `Alt+Shift+C`.
 
-- [ ] **Step 4: Write copyq_tabs.ini**
+- [x] **Step 4: Write copyq_tabs.ini**
 
 Contents from `~/.config/copyq/copyq_tabs.ini` (3 lines). Tab widget state.
 
-- [ ] **Step 5: Export prompts tab items as plaintext**
+- [x] **Step 5: Export prompts tab items as plaintext**
 
 ```bash
 cd /home/dough/repos/exercises/dotfiles
@@ -1000,13 +1000,13 @@ for i in $(seq 0 $((count - 1))); do
 done
 ```
 
-- [ ] **Step 6: Verify no secrets in tracked files**
+- [x] **Step 6: Verify no secrets in tracked files**
 
 ```bash
 rg 'sk-or|ghp_|token|password|secret|key' .config/copyq/ || echo "Clean — no secrets"
 ```
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 cd /home/dough/repos/exercises/dotfiles
