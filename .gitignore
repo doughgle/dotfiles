@@ -1,0 +1,8 @@
+*.pem
+*.env
+*.key
+*kubeconfig*
+*secret*
+*credential*
+*token*
+.k3d/
