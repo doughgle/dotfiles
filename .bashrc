@@ -116,7 +116,7 @@ if ! shopt -oq posix; then
   fi
 fi
 
-export REPOS=/media/dough/Storage/repos
+export REPOS=/home/dough/repos
 
 eval "$(starship init bash)"
 eval "$(gh copilot alias -- bash)"
