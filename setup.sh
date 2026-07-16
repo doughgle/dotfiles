@@ -72,8 +72,41 @@ copy_file "$SCRIPT_DIR/.config/fish/config.fish"    "$HOME/.config/fish/config.f
 copy_file "$SCRIPT_DIR/.config/gh/config.yml"       "$HOME/.config/gh/config.yml"
 copy_file "$SCRIPT_DIR/.config/gh-copilot/config.yml" "$HOME/.config/gh-copilot/config.yml"
 copy_file "$SCRIPT_DIR/.config/opencode"            "$HOME/.config/opencode"
+copy_file "$SCRIPT_DIR/.config/copyq/copyq.conf"         "$HOME/.config/copyq/copyq.conf"
+copy_file "$SCRIPT_DIR/.config/copyq/copyq-commands.ini" "$HOME/.config/copyq/copyq-commands.ini"
+copy_file "$SCRIPT_DIR/.config/copyq/copyq_tabs.ini"     "$HOME/.config/copyq/copyq_tabs.ini"
 copy_file "$SCRIPT_DIR/.config/Code/User/settings.json"  "$HOME/.config/Code/User/settings.json"
 copy_file "$SCRIPT_DIR/.config/Code/User/keybindings.json" "$HOME/.config/Code/User/keybindings.json"
+
+# CopyQ prompts import (requires CopyQ to be running)
+echo "--- Importing CopyQ prompts ---"
+if command -v copyq &>/dev/null; then
+    PROMPTS_FILE="$SCRIPT_DIR/.config/copyq/prompts.txt"
+    if [ -f "$PROMPTS_FILE" ]; then
+        COUNT=$(copyq "tab('prompts'); count()" 2>/dev/null || echo 0)
+        if [ "$COUNT" -gt 0 ]; then
+            echo "  [SKIP] CopyQ 'prompts' tab already has $COUNT items"
+            SKIP=$((SKIP + 1))
+        else
+            awk 'BEGIN{i=0} /^=====$/ {i++; next} {print > "/tmp/copyq_prompt_" i ".txt"}' "$PROMPTS_FILE"
+            IMP=0
+            for f in /tmp/copyq_prompt_*.txt; do
+                content=$(cat "$f")
+                if [ -n "$content" ] && copyq "tab('prompts'); add('$content')" 2>/dev/null; then
+                    IMP=$((IMP + 1))
+                fi
+            done
+            rm -f /tmp/copyq_prompt_*.txt
+            echo "  [OK] Imported $IMP prompts into CopyQ 'prompts' tab"
+            OK=$((OK + IMP))
+        fi
+    else
+        echo "  [SKIP] prompts.txt not found"
+        SKIP=$((SKIP + 1))
+    fi
+else
+    echo "  [WARN] copyq CLI not found — skip prompt import"
+fi
 
 # Fonts
 echo "--- Installing fonts ---"

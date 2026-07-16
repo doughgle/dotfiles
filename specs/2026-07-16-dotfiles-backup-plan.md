@@ -25,6 +25,10 @@
 | CREATE | `.config/gh/config.yml` | gh CLI config |
 | CREATE | `.config/gh-copilot/config.yml` | Copilot CLI config |
 | CREATE | `.config/opencode/opencode.jsonc` | OpenCode config |
+| CREATE | `.config/copyq/copyq.conf` | CopyQ settings, theme, shortcuts, plugins |
+| CREATE | `.config/copyq/copyq-commands.ini` | CopyQ user commands (pin, tag, image sort) |
+| CREATE | `.config/copyq/copyq_tabs.ini` | CopyQ tab layout (4 tabs) |
+| CREATE | `.config/copyq/prompts.txt`              | 5 prompts exported from CopyQ, plaintext |
 | REWRITE | `.config/Code/User/settings.json` | Curated portable VS Code settings |
 | REWRITE | `.config/Code/User/keybindings.json` | Curated portable VS Code keybindings |
 | REWRITE | `setup.sh` | Copy-based bootstrap script |
@@ -40,7 +44,7 @@
 - Delete: `.config/google-chrome/` (untracked)
 - Delete: `.config/Code/` cache subdirs (untracked — keep `User/`)
 - Delete: `.config/Code - Insiders/` cache subdirs (untracked — keep `User/`)
-- Delete: all remaining `.config/*` cache dirs (untracked) EXCEPT: `starship.toml`, `fish/`, `gh/`, `gh-copilot/`, `opencode/`, `Code/User/`
+- Delete: all remaining `.config/*` cache dirs (untracked) EXCEPT: `starship.toml`, `fish/`, `gh/`, `gh-copilot/`, `opencode/`, `copyq/`, `Code/User/`
 
 Full list of `.config/` dirs to delete:
 
@@ -155,7 +159,10 @@ rm -rf .config/autostart/
 rm -rf .config/cef_user_data/
 rm -rf .config/com.psiexams.psi-bridge-secure-browser/
 rm -rf .config/configstore/
-rm -rf .config/copyq/
+rm -f .config/copyq/copyq_tab_*.dat   # clipboard history (secrets)
+rm -f .config/copyq/copyq.lock        # runtime lock
+rm -f .config/copyq/.copyq_s          # IPC socket
+rm -f .config/copyq/copyq.pub         # encryption key
 rm -rf .config/dconf/
 rm -rf .config/enchant/
 rm -rf .config/eog/
@@ -306,7 +313,7 @@ starship init, gh copilot hook, kubectl autocomplete."
 **Files:**
 - Modify: `.gitconfig`
 
-- [ ] **Step 1: Write new .gitconfig**
+- [x] **Step 1: Write new .gitconfig**
 
 ```ini
 [alias]
@@ -324,7 +331,7 @@ starship init, gh copilot hook, kubectl autocomplete."
 
 Write to `/home/dough/repos/exercises/dotfiles/.gitconfig`.
 
-- [ ] **Step 2: Verify diff**
+- [x] **Step 2: Verify diff**
 
 ```bash
 cd /home/dough/repos/exercises/dotfiles
@@ -333,7 +340,7 @@ git diff .gitconfig
 
 Confirm [user], [sendemail], [credential], [safe] sections are removed.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 cd /home/dough/repos/exercises/dotfiles
@@ -810,12 +817,45 @@ copy_file "$SCRIPT_DIR/.config/fish/config.fish"    "$HOME/.config/fish/config.f
 copy_file "$SCRIPT_DIR/.config/gh/config.yml"       "$HOME/.config/gh/config.yml"
 copy_file "$SCRIPT_DIR/.config/gh-copilot/config.yml" "$HOME/.config/gh-copilot/config.yml"
 copy_file "$SCRIPT_DIR/.config/opencode"            "$HOME/.config/opencode"
+copy_file "$SCRIPT_DIR/.config/copyq/copyq.conf"         "$HOME/.config/copyq/copyq.conf"
+copy_file "$SCRIPT_DIR/.config/copyq/copyq-commands.ini" "$HOME/.config/copyq/copyq-commands.ini"
+copy_file "$SCRIPT_DIR/.config/copyq/copyq_tabs.ini"     "$HOME/.config/copyq/copyq_tabs.ini"
 copy_file "$SCRIPT_DIR/.config/Code/User/settings.json"  "$HOME/.config/Code/User/settings.json"
 copy_file "$SCRIPT_DIR/.config/Code/User/keybindings.json" "$HOME/.config/Code/User/keybindings.json"
 
 # Fonts
 echo "--- Installing fonts ---"
 copy_file "$SCRIPT_DIR/.fonts" "$HOME/.fonts"
+
+# CopyQ prompts import (requires CopyQ to be running)
+echo "--- Importing CopyQ prompts ---"
+if command -v copyq &>/dev/null; then
+    PROMPTS_FILE="$SCRIPT_DIR/.config/copyq/prompts.txt"
+    if [ -f "$PROMPTS_FILE" ]; then
+        COUNT=$(copyq "tab('prompts'); count()" 2>/dev/null || echo 0)
+        if [ "$COUNT" -gt 0 ]; then
+            echo "  [SKIP] CopyQ 'prompts' tab already has $COUNT items"
+            SKIP=$((SKIP + 1))
+        else
+            awk 'BEGIN{i=0} /^=====$/ {i++; next} {print > "/tmp/copyq_prompt_" i ".txt"}' "$PROMPTS_FILE"
+            IMP=0
+            for f in /tmp/copyq_prompt_*.txt; do
+                content=$(cat "$f")
+                if [ -n "$content" ] && copyq "tab('prompts'); add('$content')" 2>/dev/null; then
+                    IMP=$((IMP + 1))
+                fi
+            done
+            rm -f /tmp/copyq_prompt_*.txt
+            echo "  [OK] Imported $IMP prompts into CopyQ 'prompts' tab"
+            OK=$((OK + IMP))
+        fi
+    else
+        echo "  [SKIP] prompts.txt not found"
+        SKIP=$((SKIP + 1))
+    fi
+else
+    echo "  [WARN] copyq CLI not found — skip prompt import"
+fi
 
 # Clone personal-agent-stdlib (non-blocking)
 echo "--- Setting up agent stdlib ---"
@@ -878,6 +918,10 @@ Expected tree:
 .config/fish/config.fish
 .config/gh-copilot/config.yml
 .config/gh/config.yml
+.config/copyq/copyq.conf
+.config/copyq/copyq-commands.ini
+.config/copyq/copyq_tabs.ini
+.config/copyq/prompts.txt
 .config/opencode/opencode.jsonc
 .config/starship.toml
 .devcontainer.json
@@ -903,7 +947,8 @@ cd /home/dough/repos/exercises/dotfiles
 # The gitconfig should NOT have [user] or [sendemail] sections.
 grep -n '^\[user\]\|^\[sendemail\]\|@\|signingkey\|smtp\|password' \
   .gitconfig .config/gh/config.yml .config/gh-copilot/config.yml \
-  .config/opencode/opencode.jsonc || echo "Clean — no secrets found in tracked configs"
+  .config/opencode/opencode.jsonc .config/copyq/copyq.conf \
+  .config/copyq/copyq-commands.ini || echo "Clean — no secrets found in tracked configs"
 ```
 
 Expected: only `git_protocol: https` from gh/config.yml (benign).
@@ -912,4 +957,59 @@ Expected: only `git_protocol: https` from gh/config.yml (benign).
 
 ```bash
 test -x setup.sh && echo "setup.sh is executable"
+```
+
+---
+
+### Task 13: Create CopyQ portable config and exported prompts
+
+**Files:**
+- Create: `.config/copyq/copyq.conf`
+- Create: `.config/copyq/copyq-commands.ini`
+- Create: `.config/copyq/copyq_tabs.ini`
+- Create: `.config/copyq/prompts.txt`
+
+- [ ] **Step 1: Ensure dirs exist**
+
+```bash
+mkdir -p /home/dough/repos/exercises/dotfiles/.config/copyq
+```
+
+- [ ] **Step 2: Write copyq.conf**
+
+Contents from `~/.config/copyq/copyq.conf` (247 lines). Portable — no machine paths or secrets.
+
+- [ ] **Step 3: Write copyq-commands.ini**
+
+Contents from `~/.config/copyq/copyq-commands.ini` (53 lines). 10 user commands: Pin/Unpin, Tag/Untag, Move Images to "&Images" tab, Show window via `Alt+Shift+C`.
+
+- [ ] **Step 4: Write copyq_tabs.ini**
+
+Contents from `~/.config/copyq/copyq_tabs.ini` (3 lines). Tab widget state.
+
+- [ ] **Step 5: Export prompts tab items as plaintext**
+
+```bash
+cd /home/dough/repos/exercises/dotfiles
+count=$(copyq "tab('prompts'); count()")
+> .config/copyq/prompts.txt
+for i in $(seq 0 $((count - 1))); do
+    copyq "tab('prompts'); read($i)" >> .config/copyq/prompts.txt
+    echo "" >> .config/copyq/prompts.txt
+    echo "=====" >> .config/copyq/prompts.txt
+done
+```
+
+- [ ] **Step 6: Verify no secrets in tracked files**
+
+```bash
+rg 'sk-or|ghp_|token|password|secret|key' .config/copyq/ || echo "Clean — no secrets"
+```
+
+- [ ] **Step 7: Commit**
+
+```bash
+cd /home/dough/repos/exercises/dotfiles
+git add .config/copyq/
+git commit -m "chore: add CopyQ portable config and plaintext prompt exports"
 ```

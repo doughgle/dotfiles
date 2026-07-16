@@ -22,6 +22,11 @@ setup.sh (REWRITE)        # copy-based bootstrap
 ├── gh/config.yml         (NEW) — gh CLI aliases + protocol
 ├── gh-copilot/config.yml (NEW) — copilot CLI prefs
 ├── opencode/opencode.jsonc  (NEW) — opencode config
+├── copyq/
+│   ├── copyq.conf          (NEW) — settings, theme, shortcuts, plugins
+│   ├── copyq-commands.ini  (NEW) — user commands (pin, tag, image sort)
+│   ├── copyq_tabs.ini      (NEW) — tab layout state
+│       └── prompts.txt         (NEW) — 5 prompts combined, plaintext, `=====` sep
 └── Code/User/
     ├── settings.json     (NEW) — curated portable subset (Stable+Insiders union, machine paths stripped)
     └── keybindings.json  (NEW) — curated portable subset
@@ -51,7 +56,7 @@ All exist as stale data from original commit. Home dir is untouched.
 | `.config/Microsoft/` | Teams/Edge data |
 | `.config/PSI Bridge Secure Browser/` | Exam browser |
 | `.config/libreoffice/`, `.config/GIMP/`, `.config/wireshark/` | App config+state |
-| `.config/copyq/` | Clipboard runtime state |
+| `.config/copyq/` (keep `copyq.conf`, `copyq-commands.ini`, `copyq_tabs.ini`, `prompts.txt`; remove `*_tab_*.dat`, `copyq.pub`, `copyq.lock`, `.copyq_s`) | Clipboard runtime state; config + prompts tracked separately |
 | `.config/pulse/` | Audio runtime state |
 | `.config/teams/` | Teams config |
 | `.config/evolution/` | Email config (may contain accounts) |
@@ -163,6 +168,22 @@ suggest_execute_confirm_default: false
 Live config. Disabled MCP server for mcp-grafana-test (port 18000,
 devcontainer-bound) kept as-is. Skill paths resolve to `~/.copilot/`.
 
+### `.config/copyq/` — portable config + exported prompts
+
+**Include (config):** `copyq.conf` (247 lines — all settings, theme, shortcuts, tabs,
+plugin config; no machine paths, no secrets), `copyq-commands.ini` (10 user commands:
+Pin/Unpin, Tag/Untag, Move Images to "&Images" tab, Show window under cursor via
+`Alt+Shift+C`), `copyq_tabs.ini` (tab widget layout: `&clipboard`, `urls`, `prompts`,
+`&Images`).
+
+**Include (prompts):** `prompts.txt` — 5 plaintext items exported from the `prompts`
+clipboard tab via CopyQ CLI. Safe reusable AI coding prompts (implementation queries,
+debugging checklist, GitHub issue feedback, joke curator). No secrets.
+
+**Exclude:** All `*_tab_*.dat` (binary clipboard history — contains API keys, tokens,
+passwords), `copyq.lock` (transient PID lock), `.copyq_s` (IPC socket), `copyq.pub`
+(encryption plugin public key), `~/.local/share/copyq/` (raw item blob store, 13 MB).
+
 ### `setup.sh` — copy-based bootstrap
 
 ```
@@ -175,12 +196,14 @@ devcontainer-bound) kept as-is. Skill paths resolve to `~/.copilot/`.
    .bashrc → ~/.bashrc
    .gitconfig → ~/.gitconfig
    .profile → ~/.profile
-   .config/{gh,gh-copilot,opencode,Code/User,starship.toml,fish} → ~/.config/
+   .config/{gh,gh-copilot,opencode,copyq,Code/User,starship.toml,fish} → ~/.config/
    .fonts/ → ~/.fonts/
    .vale.ini + .vale/ → ~/
-4. Try git clone https://github.com/doughgle/personal-agent-stdlib.git ~/.copilot
+4. Import CopyQ prompts from prompts.txt into CopyQ's prompts tab via copyq CLI
+   (skips if tab already has items, warns if copyq not installed) [non-blocking]
+5. Try git clone https://github.com/doughgle/personal-agent-stdlib.git ~/.copilot
    [OK] on success, [WARN] on failure (non-blocking)
-5. Print summary: "N copied, N skipped, N failed"
+6. Print summary: "N copied, N skipped, N failed"
 ```
 
 ## Decisions Log
@@ -201,3 +224,4 @@ devcontainer-bound) kept as-is. Skill paths resolve to `~/.copilot/`.
 | Cache cleanup | Repo only, home dir untouched |
 | Setup.sh failures | Explicit [OK]/[WARN]/[FAIL] per action |
 | Fonts | Track all 56 OTF files + docs, remove .uuid |
+| CopyQ config scope | Include copyq.conf, copyq-commands.ini, copyq_tabs.ini (no clipboard history); export prompts tab as combined plaintext prompts.txt, import via copyq CLI in setup.sh |

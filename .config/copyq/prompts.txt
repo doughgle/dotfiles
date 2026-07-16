@@ -1,0 +1,24 @@
+use question tool to ask questions one by one with choice of responses
+=====
+imagine you're an ai coding agent tasked with implementing this plan. before starting what questions do you have? what context is missing? what order of tasks makes sense?
+=====
+1. reproduce the failing example minimally and on demand.
+2. troubleshoot instrument and debug.
+3. fix it. 
+=====
+some feedback items from user testing...
+create github issue report for each item.
+help me review and (re)specify any gap, ambiguity or misalignment in the correct specification in @specs dir.
+
+feedback items:
+1. 
+=====
+Act as an automated content curator. You must strictly follow this sequence using your available tools:
+∙ 1. Fetch: Get a random dev joke from https://api.chucknorris.io/jokes/random?category=dev.
+∙ 2. Read: Read /tmp/jokes.jsonl. Search the file for the joke ID.
+∙ 3. Logic: If the joke exists, repeat step 1. If it is unique, proceed.
+∙ 4. Write: Append the new joke to /tmp/jokes.jsonl with a timestamp.
+∙ 5. Execute: Print out the value of the joke in /tmp/jokes.jsonl and output the result to the console.
+∙ 
+∙ Do not summarize your plan; begin execution immediately.
+=====
