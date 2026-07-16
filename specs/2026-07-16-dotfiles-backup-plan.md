@@ -34,13 +34,13 @@
 ### Task 1: Remove cache/state/secrets directories from repo
 
 **Files:**
-- Delete: `.k3d/`
-- Delete: `.vscode/`
-- Delete: `.fonts/.uuid`
-- Delete: `.config/google-chrome/`
-- Delete: `.config/Code/` (keep `User/` subdir — will rewrite contents separately)
-- Delete: `.config/Code - Insiders/` (keep `User/` subdir — will rewrite contents separately)
-- Delete: all remaining `.config/*` dirs EXCEPT: `starship.toml`, `fish/`, `gh/`, `gh-copilot/`, `opencode/`, `Code/User/`
+- Delete: `.k3d/` (tracked: `k3d-default.yaml`; rest untracked)
+- Delete: `.vscode/` (entirely untracked)
+- Delete: `.fonts/.uuid` (untracked)
+- Delete: `.config/google-chrome/` (untracked)
+- Delete: `.config/Code/` cache subdirs (untracked — keep `User/`)
+- Delete: `.config/Code - Insiders/` cache subdirs (untracked — keep `User/`)
+- Delete: all remaining `.config/*` cache dirs (untracked) EXCEPT: `starship.toml`, `fish/`, `gh/`, `gh-copilot/`, `opencode/`, `Code/User/`
 
 Full list of `.config/` dirs to delete:
 
@@ -50,7 +50,7 @@ configstore/     copyq/               dconf/               enchant/
 eog/             evince/              evolution/           gedit/
 GIMP/            gnome-session/       goa-1.0/             google-chrome/
 gtk-2.0/         gtk-3.0/             guake/               hardhat-nodejs/
-helm/            ibus/                k3d/                 libreoffice/
+helm/            ibus/                libreoffice/
 md-publisher/    menus/               Microsoft/           Microsoft Teams - Preview/
 nautilus/        procps/              PSI Bridge Secure Browser/
 pulse/           Rygel/               sh.loft.devpod/      teams/
@@ -67,65 +67,141 @@ Local Storage/   logs/                Service Worker/      Session Storage/
 Shared Dictionary/  WebStorage/       Workspaces/
 ```
 
-- [ ] **Step 1: Remove .k3d/**
+**Phase A — Delete untracked cache dirs (`rm -rf`, no git involvement)**
+Working tree is >6 GB with millions of cache files. `rm -rf` avoids git scanning the tree and triggering OOM.
+
+- [x] **Step 1: Remove .k3d/ (disk cleanup — any untracked files)**
 
 ```bash
-git rm -r .k3d/
+rm -rf .k3d/
 ```
 
-- [ ] **Step 2: Remove .vscode/**
+- [x] **Step 2: Remove .vscode/ (1.1G — untracked)**
 
 ```bash
-git rm -r .vscode/
+rm -rf .vscode/
 ```
 
-- [ ] **Step 3: Remove .fonts/.uuid**
+- [x] **Step 3: Remove .fonts/.uuid (untracked)**
 
 ```bash
-git rm .fonts/.uuid
+rm -rf .fonts/.uuid
 ```
 
-- [ ] **Step 4: Remove all cache dirs under .config/**
+- [x] **Step 4: Remove .config/google-chrome/ (3.1G — untracked)**
 
 ```bash
-# Remove everything except keep-list
-cd /home/dough/repos/exercises/dotfiles/.config
-KEEP_DIRS="starship.toml fish gh gh-copilot opencode Code/User"
-for d in */; do
-  dname="${d%/}"
-  keep=false
-  for k in $KEEP_DIRS; do
-    if [ "$dname" = "$k" ] || [ "$dname" = "Code" ] || [ "$dname" = "Code - Insiders" ]; then
-      keep=true; break
-    fi
-  done
-  if [ "$keep" = false ]; then
-    git rm -r "$d"
-  fi
-done
+rm -rf .config/google-chrome/
 ```
 
-- [ ] **Step 5: Clean Code/ and Code - Insiders/ subdirs (keep only User/)**
+- [x] **Step 5: Remove cache subdirs inside .config/Code/ (untracked — one per line)**
 
 ```bash
-cd /home/dough/repos/exercises/dotfiles/.config/Code
-for d in */; do
-  dname="${d%/}"
-  if [ "$dname" != "User" ]; then
-    git rm -rf "$d"
-  fi
-done
-
-cd /home/dough/repos/exercises/dotfiles/.config/Code\ -\ Insiders
-for d in */; do
-  dname="${d%/}"
-  if [ "$dname" != "User" ]; then
-    git rm -rf "$d"
-  fi
-done
+rm -rf .config/Code/Backups
+rm -rf .config/Code/blob_storage
+rm -rf .config/Code/Cache
+rm -rf .config/Code/CachedConfigurations
+rm -rf .config/Code/CachedData
+rm -rf .config/Code/CachedExtensionVSIXs
+rm -rf .config/Code/CachedExtensions
+rm -rf .config/Code/CachedProfilesData
+rm -rf .config/Code/Code\ Cache
+rm -rf .config/Code/Crashpad
+rm -rf .config/Code/databases
+rm -rf .config/Code/DawnCache
+rm -rf .config/Code/Dictionaries
+rm -rf .config/Code/GPUCache
+rm -rf .config/Code/IndexedDB
+rm -rf .config/Code/Local\ Storage
+rm -rf .config/Code/logs
+rm -rf .config/Code/Service\ Worker
+rm -rf .config/Code/Session\ Storage
+rm -rf .config/Code/Shared\ Dictionary
+rm -rf .config/Code/WebStorage
+rm -rf .config/Code/Workspaces
 ```
 
-- [ ] **Step 6: Verify deletions with git status**
+- [x] **Step 6: Remove cache subdirs inside .config/Code - Insiders/ (untracked — one per line)**
+
+```bash
+rm -rf .config/Code\ -\ Insiders/Backups
+rm -rf .config/Code\ -\ Insiders/blob_storage
+rm -rf .config/Code\ -\ Insiders/Cache
+rm -rf .config/Code\ -\ Insiders/CachedConfigurations
+rm -rf .config/Code\ -\ Insiders/CachedData
+rm -rf .config/Code\ -\ Insiders/CachedExtensionVSIXs
+rm -rf .config/Code\ -\ Insiders/CachedExtensions
+rm -rf .config/Code\ -\ Insiders/CachedProfilesData
+rm -rf .config/Code\ -\ Insiders/Code\ Cache
+rm -rf .config/Code\ -\ Insiders/Crashpad
+rm -rf .config/Code\ -\ Insiders/databases
+rm -rf .config/Code\ -\ Insiders/DawnCache
+rm -rf .config/Code\ -\ Insiders/Dictionaries
+rm -rf .config/Code\ -\ Insiders/GPUCache
+rm -rf .config/Code\ -\ Insiders/IndexedDB
+rm -rf .config/Code\ -\ Insiders/Local\ Storage
+rm -rf .config/Code\ -\ Insiders/logs
+rm -rf .config/Code\ -\ Insiders/Service\ Worker
+rm -rf .config/Code\ -\ Insiders/Session\ Storage
+rm -rf .config/Code\ -\ Insiders/Shared\ Dictionary
+rm -rf .config/Code\ -\ Insiders/WebStorage
+rm -rf .config/Code\ -\ Insiders/Workspaces
+```
+
+- [x] **Step 7: Remove remaining untracked cache dirs under .config/**
+
+```bash
+rm -rf .config/autostart/
+rm -rf .config/cef_user_data/
+rm -rf .config/com.psiexams.psi-bridge-secure-browser/
+rm -rf .config/configstore/
+rm -rf .config/copyq/
+rm -rf .config/dconf/
+rm -rf .config/enchant/
+rm -rf .config/eog/
+rm -rf .config/evince/
+rm -rf .config/evolution/
+rm -rf .config/gedit/
+rm -rf .config/GIMP/
+rm -rf .config/gnome-session/
+rm -rf .config/goa-1.0/
+rm -rf .config/gtk-2.0/
+rm -rf .config/gtk-3.0/
+rm -rf .config/guake/
+rm -rf .config/hardhat-nodejs/
+rm -rf .config/helm/
+rm -rf .config/ibus/
+rm -rf .config/libreoffice/
+rm -rf .config/md-publisher/
+rm -rf .config/menus/
+rm -rf .config/Microsoft/
+rm -rf .config/Microsoft\ Teams\ -\ Preview/
+rm -rf .config/nautilus/
+rm -rf .config/procps/
+rm -rf .config/PSI\ Bridge\ Secure\ Browser/
+rm -rf .config/pulse/
+rm -rf .config/Rygel/
+rm -rf .config/sh.loft.devpod/
+rm -rf .config/teams/
+rm -rf .config/update-notifier/
+rm -rf .config/wireshark/
+rm -rf .config/yelp/
+```
+
+**Phase B — Remove tracked files from git (working tree is now small, safe)**
+
+- [x] **Step 8: Remove tracked .k3d/k3d-default.yaml from git**
+
+```bash
+cd /home/dough/repos/exercises/dotfiles
+git rm .k3d/k3d-default.yaml
+```
+
+Note: if `.k3d/` was already deleted from disk and the deletion staged, this step is already complete.
+
+**Phase C — Verify and commit**
+
+- [x] **Step 9: Verify deletions**
 
 ```bash
 cd /home/dough/repos/exercises/dotfiles
@@ -133,7 +209,9 @@ git status
 git diff --cached --stat | tail -20
 ```
 
-- [ ] **Step 7: Commit**
+Confirm no cache directories remain on disk and the index reflects all intended deletions.
+
+- [x] **Step 10: Commit**
 
 ```bash
 git commit -m "chore: remove cache data, secrets, and stale files from repo
@@ -151,7 +229,7 @@ runtime state). Keep only User/ within Code/ and Code - Insiders/."
 **Files:**
 - Create: `.gitignore`
 
-- [ ] **Step 1: Create .gitignore**
+- [x] **Step 1: Create .gitignore**
 
 ```gitignore
 *.pem
@@ -166,7 +244,7 @@ runtime state). Keep only User/ within Code/ and Code - Insiders/."
 
 Write to `/home/dough/repos/exercises/dotfiles/.gitignore`.
 
-- [ ] **Step 2: Commit**
+- [x] **Step 2: Commit**
 
 ```bash
 cd /home/dough/repos/exercises/dotfiles
@@ -184,7 +262,7 @@ Patterns: *.pem, *.env, *.key, *kubeconfig*, *secret*,
 **Files:**
 - Modify: `.bashrc`
 
-- [ ] **Step 1: Write new .bashrc**
+- [x] **Step 1: Write new .bashrc**
 
 Contents: generic bash plumbing (HISTCONTROL, HISTSIZE, histappend, checkwinsize, lesspipe, color prompt with conditionals, programmable completion boilerplate) plus these custom additions at the bottom:
 
@@ -200,7 +278,7 @@ complete -o default -F __start_kubectl k
 
 Write to `/home/dough/repos/exercises/dotfiles/.bashrc`.
 
-- [ ] **Step 2: Verify diff from current repo version**
+- [x] **Step 2: Verify diff from current repo version**
 
 ```bash
 cd /home/dough/repos/exercises/dotfiles
@@ -209,7 +287,7 @@ git diff .bashrc
 
 Confirm that machine-specific lines (REPOS=/media/dough/Storage/repos, PATH exports, OTEL vars, cargo, copilotv, sonarqube, opencode PATH) are removed.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 cd /home/dough/repos/exercises/dotfiles
@@ -274,7 +352,7 @@ not macOS-compatible), [safe] (machine-specific paths)."
 **Files:**
 - Modify: `.profile`
 
-- [ ] **Step 1: Remove the `. "$HOME/.cargo/env"` line**
+- [x] **Step 1: Remove the `. "$HOME/.cargo/env"` line**
 
 Current line 28 in live `.profile` (but NOT in repo's `.profile` — verify it's absent first):
 
@@ -285,7 +363,7 @@ grep -n 'cargo' .profile
 
 If it's not there (likely), no change needed. If it is, remove it. The repo's `.profile` should be 27 lines ending with the `.local/bin` PATH block.
 
-- [ ] **Step 2: Commit (if changed)**
+- [x] **Step 2: Commit (if changed) — skipped, no cargo line found**
 
 ```bash
 cd /home/dough/repos/exercises/dotfiles
@@ -302,7 +380,7 @@ If no change was needed, skip this step.
 **Files:**
 - Create: `.config/gh/config.yml`
 
-- [ ] **Step 1: Write gh/config.yml**
+- [x] **Step 1: Write gh/config.yml**
 
 ```yaml
 # The current version of the config schema
@@ -326,7 +404,7 @@ browser:
 
 Write to `/home/dough/repos/exercises/dotfiles/.config/gh/config.yml`.
 
-- [ ] **Step 2: Commit**
+- [x] **Step 2: Commit**
 
 ```bash
 cd /home/dough/repos/exercises/dotfiles
@@ -341,7 +419,7 @@ git commit -m "chore: add gh CLI config"
 **Files:**
 - Create: `.config/gh-copilot/config.yml`
 
-- [ ] **Step 1: Write gh-copilot/config.yml**
+- [x] **Step 1: Write gh-copilot/config.yml**
 
 ```yaml
 optional_analytics: true
@@ -350,7 +428,7 @@ suggest_execute_confirm_default: false
 
 Write to `/home/dough/repos/exercises/dotfiles/.config/gh-copilot/config.yml`.
 
-- [ ] **Step 2: Commit**
+- [x] **Step 2: Commit**
 
 ```bash
 cd /home/dough/repos/exercises/dotfiles
@@ -365,13 +443,13 @@ git commit -m "chore: add gh-copilot CLI config"
 **Files:**
 - Create: `.config/opencode/opencode.jsonc`
 
-- [ ] **Step 1: Ensure directory exists**
+- [x] **Step 1: Ensure directory exists**
 
 ```bash
 mkdir -p /home/dough/repos/exercises/dotfiles/.config/opencode
 ```
 
-- [ ] **Step 2: Write opencode.jsonc**
+- [x] **Step 2: Write opencode.jsonc**
 
 ```jsonc
 {
@@ -408,7 +486,7 @@ mkdir -p /home/dough/repos/exercises/dotfiles/.config/opencode
 
 Write to `/home/dough/repos/exercises/dotfiles/.config/opencode/opencode.jsonc`.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 cd /home/dough/repos/exercises/dotfiles
@@ -423,7 +501,7 @@ git commit -m "chore: add opencode config"
 **Files:**
 - Modify: `.config/Code/User/settings.json`
 
-- [ ] **Step 1: Write curated portable settings.json**
+- [x] **Step 1: Write curated portable settings.json**
 
 Portable subset from union of Stable + Insiders, machine paths stripped:
 
@@ -550,14 +628,14 @@ Portable subset from union of Stable + Insiders, machine paths stripped:
 
 Write to `/home/dough/repos/exercises/dotfiles/.config/Code/User/settings.json`.
 
-- [ ] **Step 2: Verify no machine-specific paths remain**
+- [x] **Step 2: Verify no machine-specific paths remain**
 
 ```bash
 cd /home/dough/repos/exercises/dotfiles
 rg 'shellcheck|trivy\.binaryPath|condaPath|defaultInterpreterPath|crash-reporter|zoomLevel|profiles\.osx' .config/Code/User/settings.json || echo "Clean - no machine paths found"
 ```
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 cd /home/dough/repos/exercises/dotfiles
@@ -575,7 +653,7 @@ conda, trivy, profiles.osx, zoomLevel, crash-reporter)."
 **Files:**
 - Modify: `.config/Code/User/keybindings.json`
 
-- [ ] **Step 1: Write curated portable keybindings.json**
+- [x] **Step 1: Write curated portable keybindings.json**
 
 Union of Stable + Insiders keybindings:
 
@@ -638,7 +716,7 @@ Union of Stable + Insiders keybindings:
 
 Write to `/home/dough/repos/exercises/dotfiles/.config/Code/User/keybindings.json`.
 
-- [ ] **Step 2: Commit**
+- [x] **Step 2: Commit**
 
 ```bash
 cd /home/dough/repos/exercises/dotfiles
@@ -655,7 +733,7 @@ Union of Stable + Insiders keybindings."
 **Files:**
 - Modify: `setup.sh`
 
-- [ ] **Step 1: Write setup.sh**
+- [x] **Step 1: Write setup.sh**
 
 ```bash
 #!/bin/bash
@@ -767,7 +845,7 @@ Write to `/home/dough/repos/exercises/dotfiles/setup.sh`. Make executable:
 chmod +x /home/dough/repos/exercises/dotfiles/setup.sh
 ```
 
-- [ ] **Step 2: Commit**
+- [x] **Step 2: Commit**
 
 ```bash
 cd /home/dough/repos/exercises/dotfiles
@@ -784,7 +862,7 @@ per action."
 
 ### Task 12: Final verification
 
-- [ ] **Step 1: Verify tracked file listing**
+- [x] **Step 1: Verify tracked file listing**
 
 ```bash
 cd /home/dough/repos/exercises/dotfiles
@@ -817,7 +895,7 @@ setup.sh
 
 No `.k3d/`, no `.vscode/`, no cache dirs, no `.fonts/.uuid`.
 
-- [ ] **Step 2: Verify no secrets in tracked files**
+- [x] **Step 2: Verify no secrets in tracked files**
 
 ```bash
 cd /home/dough/repos/exercises/dotfiles
@@ -830,7 +908,7 @@ grep -n '^\[user\]\|^\[sendemail\]\|@\|signingkey\|smtp\|password' \
 
 Expected: only `git_protocol: https` from gh/config.yml (benign).
 
-- [ ] **Step 3: Verify setup.sh is executable**
+- [x] **Step 3: Verify setup.sh is executable**
 
 ```bash
 test -x setup.sh && echo "setup.sh is executable"
