@@ -1,0 +1,117 @@
+{
+    "editor.minimap.enabled": false,
+    "editor.mouseWheelZoom": true,
+    "files.autoSave": "afterDelay",
+    "files.exclude": {
+        "**/.trunk/*out": true,
+        "**/.trunk/*out/": true,
+        "**/.trunk/*actions/": true,
+        "**/.trunk/*logs/": true,
+        "**/.trunk/*plugins/": true,
+        "**/.trunk/*notifications/": true
+    },
+    "files.watcherExclude": {
+        "**/.trunk/*out": true,
+        "**/.trunk/*out/": true,
+        "**/.trunk/*actions/": true,
+        "**/.trunk/*logs/": true,
+        "**/.trunk/*plugins/": true,
+        "**/.trunk/*notifications/": true
+    },
+    "workbench.colorTheme": "Default Dark+",
+    "window.customTitleBarVisibility": "auto",
+    "explorer.confirmDragAndDrop": false,
+    "diffEditor.ignoreTrimWhitespace": false,
+    "diffEditor.hideUnchangedRegions.enabled": true,
+    "git.confirmSync": false,
+    "git.autofetch": true,
+    "git.openRepositoryInParentFolders": "never",
+    "git.blame.editorDecoration.enabled": false,
+    "git.blame.statusBarItem.enabled": true,
+    "github.copilot.enable": {
+        "*": true,
+        "plaintext": false,
+        "markdown": true,
+        "scminput": false,
+        "python": false
+    },
+    "github.copilot.advanced": {
+        "debug.overrideLogLevels": {
+           "*": "DEBUG"
+        }
+    },
+    "github.copilot.nextEditSuggestions.enabled": true,
+    "github.copilot.chat.copilotMemory.enabled": true,
+    "chat.agent.maxRequests": 28,
+    "chat.mcp.gallery.enabled": true,
+    "chat.mcp.autostart": "never",
+    "chat.useAgentSkills": true,
+    "chat.tools.terminal.autoApprove": {
+        "chmod": { "approve": true, "matchCommandLine": true },
+        "git status": true,
+        "pytest": true,
+        "uv sync": true
+    },
+    "chat.tools.urls.autoApprove": {
+        "https://github.com": { "approveRequest": false, "approveResponse": true },
+        "https://opentelemetry.io": true
+    },
+    "chat.viewSessions.orientation": "stacked",
+    "terminal.integrated.fontSize": 14,
+    "terminal.integrated.fontFamily": "Hasklug Nerd Font",
+    "terminal.integrated.stickyScroll.enabled": false,
+    "terminal.integrated.scrollback": 10000,
+    "terminal.integrated.shellIntegration.history": 1000,
+    "terminal.integrated.suggest.enabled": false,
+    "terminal.integrated.suggest.providers": { "vscode.terminal-suggest": false },
+    "terminal.integrated.suggest.suggestOnTriggerCharacters": false,
+    "debug.onTaskErrors": "debugAnyway",
+    "debug.disassemblyView.showSourceCode": false,
+    "cSpell.userWords": [
+        "behaviour",
+        "doughgle",
+        "douglashellinger",
+        "Hellinger"
+    ],
+    "markdown.marp.exportType": "html",
+    "markdown.marp.enableHtml": true,
+    "python.analysis.typeCheckingMode": "basic",
+    "python.terminal.activateEnvInCurrentTerminal": true,
+    "yaml.schemas": {
+        "http://schema.cloudcustodian.io/v0/custodian.json": "query*.yml",
+        "https://json.schemastore.org/bamboo-spec.json": "bamboo-spec"
+    },
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.python",
+        "editor.formatOnType": true
+    },
+    "[yaml]": {
+        "editor.defaultFormatter": "redhat.vscode-yaml"
+    },
+    "[jsonc]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    "[json]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    "[html]": {
+        "editor.defaultFormatter": "vscode.html-language-features"
+    },
+    "[terraform]": {},
+    "files.associations": {
+        "*.md": "markdown"
+    },
+    "settingsSync.ignoredExtensions": [
+        "trunk.io"
+    ],
+    "outline.collapseItems": "alwaysCollapse",
+    "docker.images.sortBy": "Size",
+    "containers.images.sortBy": "Size",
+    "remote.containers.logLevel": "trace",
+    "hediet.vscode-drawio.appearance": "automatic",
+    "hediet.vscode-drawio.codeLinkActivated": false,
+    "accessibility.verbosity.inlineChat": false,
+    "inlineChat.holdToSpeech": false,
+    "inlineChat.experimental.textButtons": true,
+    "inlineChat.experimental.enableZoneToolbar": true
+}
