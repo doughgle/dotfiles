@@ -1,0 +1,30 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": ["~/.copilot/instructions/*.instructions.md"],
+  "skills": {
+    "paths": [
+      "~/.copilot/skills/commit-atomically",
+      "~/.copilot/skills/find-docs",
+      "~/.copilot/skills/how-to-guide",
+      "~/.copilot/skills/write-explainer",
+      "~/.copilot/skills/write-tutorial",
+      "~/.copilot/skills/screenshot-chrome-tab",
+      "~/.copilot/skills/screenshot-flameshot",
+      "~/.copilot/skills/sre-postmortem",
+      "~/.copilot/skills/system-architecture-explainer",
+      "~/.copilot/installed-plugins/anthropic-agent-skills/example-skills/skills/skill-creator",
+      "~/.copilot/skills/developing-bpftrace-scripts"
+    ]
+  },
+  "plugin": [
+    "superpowers@git+https://github.com/obra/superpowers.git",
+    "opencode-history-search"
+  ],
+  "mcp": {
+    "agent-o11y-feedback-mcp-grafana-test": {
+      "type": "remote",
+      "url": "http://localhost:18000/mcp",
+      "enabled": false
+    }
+  }
+}
