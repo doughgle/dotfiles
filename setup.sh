@@ -57,6 +57,27 @@ OS="$(detect_os)"
 echo "Detected OS: $OS"
 echo ""
 
+# bash-completion (macOS/Homebrew only — Linux distros ship it via apt)
+echo "--- Installing bash-completion ---"
+if [ "$OS" = "darwin" ] && command -v brew &>/dev/null; then
+    if brew list bash-completion@2 &>/dev/null; then
+        echo "  [SKIP] bash-completion@2 already installed"
+        SKIP=$((SKIP + 1))
+    else
+        echo "  Installing bash-completion@2..."
+        if brew install bash-completion@2; then
+            echo "  [OK] bash-completion@2 installed"
+            OK=$((OK + 1))
+        else
+            echo "  [FAIL] brew install bash-completion@2"
+            FAIL=$((FAIL + 1))
+        fi
+    fi
+else
+    echo "  [SKIP] Not macOS/Homebrew"
+    SKIP=$((SKIP + 1))
+fi
+
 # Dotfiles at repo root
 echo "--- Installing dotfiles ---"
 copy_file "$SCRIPT_DIR/.bashrc"         "$HOME/.bashrc"
