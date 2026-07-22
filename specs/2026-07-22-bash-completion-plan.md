@@ -26,7 +26,7 @@ dynamic completions for opencode/pip3/terraform.
 
 **Files:** Modify `.bashrc`
 
-- [ ] **Step 1: Insert re-exec guard after the interactive-shell check (after line 9, before line 11)**
+- [x] **Step 1: Insert re-exec guard after the interactive-shell check (after line 9, before line 11)**
 
 Old (lines 5–11):
 ```bash
@@ -60,13 +60,13 @@ fi
 # don't put duplicate lines or lines starting with space in the history.
 ```
 
-- [ ] **Step 2: Verify diff**
+- [x] **Step 2: Verify diff**
 ```bash
 cd /Users/dhellinger/repos/lib/dotfiles
 git diff .bashrc
 ```
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 ```bash
 cd /Users/dhellinger/repos/lib/dotfiles
 git add .bashrc
@@ -83,7 +83,7 @@ DOTFILES_BASH_REEXEC to avoid recursion; no-op on Linux."
 
 **Files:** Modify `.bashrc`
 
-- [ ] **Step 1: Extend the existing programmable-completion block**
+- [x] **Step 1: Extend the existing programmable-completion block**
 
 Old:
 ```bash
@@ -127,13 +127,13 @@ if command -v terraform &>/dev/null; then
 fi
 ```
 
-- [ ] **Step 2: Verify diff**
+- [x] **Step 2: Verify diff**
 ```bash
 cd /Users/dhellinger/repos/lib/dotfiles
 git diff .bashrc
 ```
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 ```bash
 cd /Users/dhellinger/repos/lib/dotfiles
 git add .bashrc
@@ -152,7 +152,7 @@ which have no static file."
 
 **Files:** Modify `setup.sh`
 
-- [ ] **Step 1: Add install step after OS detection (after line 58, before "# Dotfiles at repo root")**
+- [x] **Step 1: Add install step after OS detection (after line 58, before "# Dotfiles at repo root")**
 
 Old (lines 56–61):
 ```bash
@@ -195,13 +195,13 @@ fi
 echo "--- Installing dotfiles ---"
 ```
 
-- [ ] **Step 2: Verify diff**
+- [x] **Step 2: Verify diff**
 ```bash
 cd /Users/dhellinger/repos/lib/dotfiles
 git diff setup.sh
 ```
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 ```bash
 cd /Users/dhellinger/repos/lib/dotfiles
 git add setup.sh
@@ -216,7 +216,7 @@ and if brew isn't present."
 
 ### Task 4: Run setup.sh and verify end-to-end
 
-- [ ] **Step 1: Run setup.sh**
+- [x] **Step 1: Run setup.sh**
 ```bash
 cd /Users/dhellinger/repos/lib/dotfiles
 ./setup.sh
@@ -225,20 +225,20 @@ Confirm `bash-completion@2` installs (or is skipped if already present) and
 `.bashrc` is copied to `$HOME/.bashrc` (accept the overwrite prompt — current
 live `.bashrc` predates this change).
 
-- [ ] **Step 2: Open a fresh bash shell and verify bash version**
+- [x] **Step 2: Open a fresh bash shell and verify bash version**
 ```bash
 bash -c 'bash --version | head -1'
 ```
 Expect `GNU bash, version 5.3.x` (confirms re-exec worked).
 
-- [ ] **Step 3: Verify completions are registered**
+- [x] **Step 3: Verify completions are registered**
 ```bash
 bash -ic 'complete -p aws docker kubectl helm gh npm rg brew colima cosign limactl aws-sso starship opencode terraform pip3'
 ```
 Every tool should print a `complete -F ...` or `complete -C ...` line, not
 `bash: complete: <tool>: no completion specification`.
 
-- [ ] **Step 4: Spot-check actual tab completion behavior**
+- [x] **Step 4: Spot-check actual tab completion behavior**
 
 Manually, in an interactive bash shell:
 - `kubectl ge<TAB>` → completes to `get`
@@ -246,7 +246,7 @@ Manually, in an interactive bash shell:
 - `terraform pl<TAB>` → completes to `plan`
 - `opencode ru<TAB>` → completes to `run`
 
-- [ ] **Step 5: Confirm no startup errors**
+- [x] **Step 5: Confirm no startup errors**
 ```bash
 bash -ic 'exit' 2>&1
 ```
@@ -256,14 +256,14 @@ Expect no output (no warnings/errors printed during `.bashrc` sourcing).
 
 ### Task 5: Final review
 
-- [ ] **Step 1: Review full diff across both commits**
+- [x] **Step 1: Review full diff across both commits**
 ```bash
 cd /Users/dhellinger/repos/lib/dotfiles
 git log --oneline -5
 git diff HEAD~3 -- .bashrc setup.sh
 ```
 
-- [ ] **Step 2: Confirm cross-platform safety on Linux path (code review only, no Linux machine available)**
+- [x] **Step 2: Confirm cross-platform safety on Linux path (code review only, no Linux machine available)**
 
 Verify by inspection that:
 - The re-exec guard is a no-op when `/opt/homebrew/bin/bash` doesn't exist.
