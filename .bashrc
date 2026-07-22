@@ -8,6 +8,16 @@ case $- in
       *) return;;
 esac
 
+# Homebrew ships bash 5.3+ but macOS's default /bin/bash (3.2) still wins
+# PATH resolution for plain `bash`. bash-completion@2 and some tools'
+# completion scripts (e.g. opencode's, which uses `mapfile`) require bash 4+,
+# so re-exec into Homebrew's bash if we're not already running it.
+if [ -z "${DOTFILES_BASH_REEXEC:-}" ] && [ "${BASH_VERSINFO[0]}" -lt 4 ] \
+   && [ -x /opt/homebrew/bin/bash ]; then
+    export DOTFILES_BASH_REEXEC=1
+    exec /opt/homebrew/bin/bash
+fi
+
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
 HISTCONTROL=ignoreboth
