@@ -123,7 +123,27 @@ if ! shopt -oq posix; then
     . /usr/share/bash-completion/bash_completion
   elif [ -f /etc/bash_completion ]; then
     . /etc/bash_completion
+  elif command -v brew &>/dev/null; then
+    HOMEBREW_PREFIX="$(brew --prefix)"
+    if [ -r "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh" ]; then
+      . "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh"
+    fi
   fi
+fi
+
+# Dynamic completions for tools with no static completion file
+if command -v opencode &>/dev/null; then
+    # opencode picks bash vs zsh output based on $SHELL, not an argument;
+    # login shell here is zsh, so force it explicitly.
+    eval "$(SHELL=/bin/bash opencode completion 2>/dev/null)"
+fi
+
+if command -v pip3 &>/dev/null; then
+    eval "$(pip3 completion --bash 2>/dev/null)"
+fi
+
+if command -v terraform &>/dev/null; then
+    complete -C "$(command -v terraform)" terraform
 fi
 
 export REPOS=/home/dough/repos
