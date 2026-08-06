@@ -142,8 +142,14 @@ fi
 # git completion when git itself isn't Homebrew-managed (e.g. macOS's Xcode
 # Command Line Tools git). bash-completion@2 only scans Homebrew's completion
 # directories, so CLT git's bundled git-completion.bash is otherwise never
-# sourced and `git <TAB>` silently does nothing.
-if ! declare -F _git &>/dev/null && command -v git &>/dev/null; then
+# sourced and `git <TAB>` silently does nothing. Skipped when git resolves
+# under the Homebrew prefix: Homebrew's own git formula installs a
+# version-matched git-completion.bash into the already-eagerly-sourced
+# bash_completion.d, and this fallback's old guard (checking for a bare
+# `_git` function) never actually detects that — modern git-completion.bash
+# only defines `__git_main` — so it would otherwise re-source and override
+# Homebrew's completion with the (possibly older) CLT one.
+if command -v git &>/dev/null && { ! command -v brew &>/dev/null || [[ "$(command -v git)" != "$(brew --prefix)"/* ]]; }; then
   clt_git_completion="$(xcode-select -p 2>/dev/null)/usr/share/git-core/git-completion.bash"
   if [ -r "$clt_git_completion" ]; then
     . "$clt_git_completion"
