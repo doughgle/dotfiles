@@ -78,6 +78,30 @@ else
     SKIP=$((SKIP + 1))
 fi
 
+# Standardize on Homebrew for these tools (macOS only — Linux distros use
+# apt-managed git/python3/jq, which already resolve correctly)
+echo "--- Installing brew-managed CLI tools ---"
+if [ "$OS" = "darwin" ] && command -v brew &>/dev/null; then
+    for formula in git python3 jq; do
+        if brew list "$formula" &>/dev/null; then
+            echo "  [SKIP] $formula already installed"
+            SKIP=$((SKIP + 1))
+        else
+            echo "  Installing $formula..."
+            if brew install "$formula"; then
+                echo "  [OK] $formula installed"
+                OK=$((OK + 1))
+            else
+                echo "  [FAIL] brew install $formula"
+                FAIL=$((FAIL + 1))
+            fi
+        fi
+    done
+else
+    echo "  [SKIP] Not macOS/Homebrew"
+    SKIP=$((SKIP + 1))
+fi
+
 # Dotfiles at repo root
 echo "--- Installing dotfiles ---"
 copy_file "$SCRIPT_DIR/.bashrc"         "$HOME/.bashrc"
