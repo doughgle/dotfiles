@@ -109,11 +109,11 @@ if command -v copyq &>/dev/null; then
             echo "  [SKIP] CopyQ 'prompts' tab already has $COUNT items"
             SKIP=$((SKIP + 1))
         else
-            awk 'BEGIN{i=0} /^=====$/ {i++; next} {print > "/tmp/copyq_prompt_" i ".txt"}' "$PROMPTS_FILE"
+            awk 'BEGIN{i=0} /^=====$/ {i++; next} {f = "/tmp/copyq_prompt_" i ".txt"; print > f}' "$PROMPTS_FILE"
             IMP=0
             for f in /tmp/copyq_prompt_*.txt; do
                 content=$(cat "$f")
-                if [ -n "$content" ] && copyq "tab('prompts'); add('$content')" 2>/dev/null; then
+                if [ -n "$content" ] && copyq tab prompts add "$content" 2>/dev/null; then
                     IMP=$((IMP + 1))
                 fi
             done
