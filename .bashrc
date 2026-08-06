@@ -115,6 +115,14 @@ if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
 
+# Homebrew's bin dir comes after /usr/bin in the default PATH, so system
+# binaries (git, python3, jq, ...) shadow Homebrew's even when installed.
+# `brew shellenv` prepends Homebrew's paths and sets MANPATH/INFOPATH.
+# Mirrors what .zprofile already does for zsh.
+if command -v brew &>/dev/null; then
+  eval "$(brew shellenv)"
+fi
+
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
 # sources /etc/bash.bashrc).
