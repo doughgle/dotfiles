@@ -149,6 +149,5 @@ fi
 export REPOS=/home/dough/repos
 
 eval "$(starship init bash)"
-eval "$(gh copilot alias -- bash)"
 alias k=kubectl
 complete -o default -F __start_kubectl k
