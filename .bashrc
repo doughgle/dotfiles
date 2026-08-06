@@ -131,6 +131,18 @@ if ! shopt -oq posix; then
   fi
 fi
 
+# git completion when git itself isn't Homebrew-managed (e.g. macOS's Xcode
+# Command Line Tools git). bash-completion@2 only scans Homebrew's completion
+# directories, so CLT git's bundled git-completion.bash is otherwise never
+# sourced and `git <TAB>` silently does nothing.
+if ! declare -F _git &>/dev/null && command -v git &>/dev/null; then
+  clt_git_completion="$(xcode-select -p 2>/dev/null)/usr/share/git-core/git-completion.bash"
+  if [ -r "$clt_git_completion" ]; then
+    . "$clt_git_completion"
+  fi
+  unset clt_git_completion
+fi
+
 # Dynamic completions for tools with no static completion file
 if command -v opencode &>/dev/null; then
     # opencode picks bash vs zsh output based on $SHELL, not an argument;
