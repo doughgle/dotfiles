@@ -29,7 +29,7 @@ once git is migrated.
 
 **Files:** Modify `.bashrc`
 
-- [ ] **Step 1: Insert PATH fix before the programmable-completion block**
+- [x] **Step 1: Insert PATH fix before the programmable-completion block**
 
 Old (around the existing completion-loading block):
 ```bash
@@ -57,13 +57,13 @@ fi
 # enable programmable completion features (you don't need to enable
 ```
 
-- [ ] **Step 2: Verify diff**
+- [x] **Step 2: Verify diff**
 ```bash
 cd /Users/dhellinger/repos/lib/dotfiles
 git diff .bashrc
 ```
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 ```bash
 cd /Users/dhellinger/repos/lib/dotfiles
 git add .bashrc
@@ -81,7 +81,7 @@ eval \"\$(brew shellenv)\" prepends Homebrew's paths, matching what
 
 **Files:** Modify `.bashrc`
 
-- [ ] **Step 1: Replace the guard condition**
+- [x] **Step 1: Replace the guard condition**
 
 Old:
 ```bash
@@ -119,13 +119,13 @@ if command -v git &>/dev/null && { ! command -v brew &>/dev/null || [[ "$(comman
 fi
 ```
 
-- [ ] **Step 2: Verify diff**
+- [x] **Step 2: Verify diff**
 ```bash
 cd /Users/dhellinger/repos/lib/dotfiles
 git diff .bashrc
 ```
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 ```bash
 cd /Users/dhellinger/repos/lib/dotfiles
 git add .bashrc
@@ -146,7 +146,7 @@ is under the Homebrew prefix instead."
 
 **Files:** Modify `setup.sh`
 
-- [ ] **Step 1: Add install loop after the existing `bash-completion@2` step**
+- [x] **Step 1: Add install loop after the existing `bash-completion@2` step**
 
 Old (end of the bash-completion block):
 ```bash
@@ -192,13 +192,13 @@ fi
 # Dotfiles at repo root
 ```
 
-- [ ] **Step 2: Verify diff**
+- [x] **Step 2: Verify diff**
 ```bash
 cd /Users/dhellinger/repos/lib/dotfiles
 git diff setup.sh
 ```
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 ```bash
 cd /Users/dhellinger/repos/lib/dotfiles
 git add setup.sh
@@ -214,7 +214,7 @@ PATH fix, Homebrew's versions now take precedence on PATH."
 
 ### Task 4: Run `setup.sh` and verify end-to-end
 
-- [ ] **Step 1: Run setup.sh**
+- [x] **Step 1: Run setup.sh**
 ```bash
 cd /Users/dhellinger/repos/lib/dotfiles
 ./setup.sh
@@ -223,7 +223,7 @@ Confirm `git`, `python3`, `jq` install (or are skipped if already present)
 and `.bashrc` is copied to `$HOME/.bashrc` (accept the overwrite prompt —
 the live `.bashrc` predates these changes).
 
-- [ ] **Step 2: Open a fresh bash shell and verify tool resolution**
+- [x] **Step 2: Open a fresh bash shell and verify tool resolution**
 ```bash
 bash -ic 'for t in git python3 pip3 jq; do command -v "$t"; done'
 ```
@@ -231,7 +231,7 @@ Expect all four to resolve under `/opt/homebrew/bin` (or
 `/opt/homebrew/opt/.../libexec/bin` for pip3, depending on the formula's
 symlink layout) rather than `/usr/bin`.
 
-- [ ] **Step 3: Verify git completion still works and is Homebrew's**
+- [x] **Step 3: Verify git completion still works and is Homebrew's**
 ```bash
 bash -ic 'complete -p git'
 readlink -f "$(command -v git)"
@@ -239,21 +239,21 @@ readlink -f "$(command -v git)"
 Confirm a completion spec is registered for `git`, and that `command -v git`
 resolves under the Homebrew prefix (`/opt/homebrew/...`).
 
-- [ ] **Step 4: Verify jq and pip3 completions are unaffected**
+- [x] **Step 4: Verify jq and pip3 completions are unaffected**
 ```bash
 bash -ic 'complete -p jq pip3'
 ```
 Both should still show registered completion specs (these were never
 broken, but confirm the migration didn't regress them).
 
-- [ ] **Step 5: Spot-check actual tab completion behavior**
+- [x] **Step 5: Spot-check actual tab completion behavior**
 
 Manually, in an interactive bash shell:
 - `git che<TAB>` → completes to `checkout`, `cherry`, `cherry-pick`
 - `jq -<TAB>` → shows jq's option flags
 - `pip3 in<TAB>` → completes to `install`, `inspect`
 
-- [ ] **Step 6: Confirm no startup errors**
+- [x] **Step 6: Confirm no startup errors**
 ```bash
 bash -ic 'exit' 2>&1
 ```
@@ -263,14 +263,14 @@ Expect no output (no warnings/errors printed during `.bashrc` sourcing).
 
 ### Task 5: Final review
 
-- [ ] **Step 1: Review full diff across all three commits**
+- [x] **Step 1: Review full diff across all three commits**
 ```bash
 cd /Users/dhellinger/repos/lib/dotfiles
 git log --oneline -5
 git diff HEAD~3 -- .bashrc setup.sh
 ```
 
-- [ ] **Step 2: Confirm cross-platform safety on Linux path (code review only, no Linux machine available)**
+- [x] **Step 2: Confirm cross-platform safety on Linux path (code review only, no Linux machine available)**
 
 Verify by inspection that:
 - `eval "$(brew shellenv)"` is guarded by `command -v brew` and is a no-op
